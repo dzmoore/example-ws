@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-ws
+  labels:
+    app: example-ws
+spec:
+  selector:
+    matchLabels:
+      app: example-ws
+  template:
+    metadata:
+      labels:
+        app: example-ws
+    spec:
+      containers:
+      - name: example-ws
+        image: example-ws-image
+        ports:
+        - containerPort: 8000

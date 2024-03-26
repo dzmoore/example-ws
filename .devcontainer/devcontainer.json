@@ -1,0 +1,18 @@
+{
+  "image": "ghcr.io/dzmoore/devcontainer-k8s-java:latest",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vscjava.vscode-java-pack",
+        "vscodevim.vim",
+        "ms-azuretools.vscode-docker",
+        "vscjava.vscode-java-debug",
+        "vscjava.vscode-gradle",
+        "redhat.java",
+        "ms-python.vscode-pylance",
+        "SonarSource.sonarlint-vscode",
+        "tilt-dev.tiltfile"
+      ]
+    }
+  }
+}
