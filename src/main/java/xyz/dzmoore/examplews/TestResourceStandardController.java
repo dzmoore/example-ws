@@ -29,11 +29,11 @@ public class TestResourceStandardController {
   @PostMapping
   public ResponseEntity<?> create(@RequestBody TestResource testResource) {
     final boolean invalid =
-        Optional
-          .ofNullable(testResource)
-          .map(TestResource::getId)
-          .isEmpty();
-    
+      Optional
+        .ofNullable(testResource)
+        .map(TestResource::getId)
+        .isEmpty();
+
     if (invalid) {
       return ResponseEntity.badRequest().build();
     }
@@ -44,39 +44,38 @@ public class TestResourceStandardController {
         .map(ResponseEntity::ok)
         .orElseGet(() -> ResponseEntity.internalServerError().build());
   }
-  
-   @GetMapping
-   public Collection<TestResource> get() {
-     return testResourceService.get();
-   }
 
-   @GetMapping("/{id}")
-   public ResponseEntity<TestResource> get(@PathVariable Long id) {
-     return ResponseEntity.of(testResourceService.get(id));
-   }
-  
-   @PutMapping("/{id}")
-   public ResponseEntity<TestResource> update(@PathVariable Long id, @RequestBody TestResource testResource)
-     throws URISyntaxException
-   {
-     if (testResourceService.update(id, testResource).getLeft()) {
-       return ResponseEntity.created(new URI(String.valueOf(id))).build();
-     }
+  @GetMapping
+  public Collection<TestResource> get() {
+    return testResourceService.get();
+  }
 
-     return ResponseEntity.noContent().build();
-   }
+  @GetMapping("/{id}")
+  public ResponseEntity<TestResource> get(@PathVariable Long id) {
+    return ResponseEntity.of(testResourceService.get(id));
+  }
 
-   @DeleteMapping("/{id}")
-   public ResponseEntity<?> delete(@PathVariable Long id) {
-     if (testResourceService.delete(id)) {
-       return ResponseEntity.noContent().build();
-     }
+  @PutMapping("/{id}")
+  public ResponseEntity<TestResource> update(@PathVariable Long id, @RequestBody TestResource testResource)
+    throws URISyntaxException {
+    if (testResourceService.update(id, testResource).getLeft()) {
+      return ResponseEntity.created(new URI(String.valueOf(id))).build();
+    }
 
-     return ResponseEntity.notFound().build();
-   }
+    return ResponseEntity.noContent().build();
+  }
 
-   @ExceptionHandler
-   public void handleException(Throwable t) {
-     log.error(t.getMessage(), t);
-   }
+  @DeleteMapping("/{id}")
+  public ResponseEntity<?> delete(@PathVariable Long id) {
+    if (testResourceService.delete(id)) {
+      return ResponseEntity.noContent().build();
+    }
+
+    return ResponseEntity.notFound().build();
+  }
+
+  @ExceptionHandler
+  public void handleException(Throwable t) {
+    log.error(t.getMessage(), t);
+  }
 }

@@ -11,29 +11,28 @@ local_resource(
   'example-ws-compile',
   gradlew + ' bootJar && ' +
   'rm -rf build/jar-staging && ' +
-  # https://docs.spring.io/spring-boot/docs/current/reference/html/container-images.html#container-images.dockerfiles
-  'java -Djarmode=layertools -jar build/libs/example-ws-0.0.1-SNAPSHOT.jar extract --destination build/jar-extracted && ' +
+  'java -Djarmode=layertools -jar $(find build/libs -name \'*.jar\') extract --destination build/jar-extracted && ' +
   'rsync --delete --inplace --checksum -r build/jar-extracted/ build/jar',
-  deps=['src', 'build.gradle'],
-  resource_deps = [])
+  deps=['src', 'build.gradle']
+)
 
 docker_build_with_restart(
   'example-ws-image',
-  './build/jar',
+  '.',
+  dockerfile='Dockerfile',
   entrypoint=['java', 'org.springframework.boot.loader.launch.JarLauncher'],
-  dockerfile='./Dockerfile',
+  only=['build/libs', 'build/jar', 'Dockerfile'],
   live_update=[
-    sync('./build/jar/dependencies', '/app'),
-    sync('./build/jar/spring-boot-loader', '/app'),
-    sync('./build/jar/snapshot-dependencies', '/app'),
-    sync('./build/jar/application', '/app'),
+    sync('./build/jar/dependencies', '/application'),
+    sync('./build/jar/spring-boot-loader', '/application'),
+    sync('./build/jar/snapshot-dependencies', '/application'),
+    sync('./build/jar/application', '/application'),
   ],
 )
 
 k8s_yaml('kubernetes.yaml')
-k8s_resource('example-ws', 
-             port_forwards=[port_forward(8000, name='example-ws')],
-             resource_deps=['example-ws-compile'])
+k8s_resource('example-ws', port_forwards=[port_forward(8000, name='example-ws')])
+
 
 load('ext://helm_resource', 'helm_resource', 'helm_repo')
 
