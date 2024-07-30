@@ -59,6 +59,9 @@ jobs:
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            # set latest tag for default branch
+            type=raw,value=latest,enable={{is_default_branch}}
           
       # This step uses the `docker/build-push-action` action to build the image, based on your repository's `Dockerfile`.
       # If the build succeeds, it pushes the image to GitHub Packages.  It uses the `context` parameter to define
